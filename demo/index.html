@@ -10,7 +10,6 @@
 <title>Sentinel Live Demo</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600&display=swap">
 <style>
-/* Dark-first: observability tools live in dark mode */
 :root {
   --bg: #060b14;
   --bg-surface: #0d1525;
@@ -29,6 +28,12 @@
   --severity-high: #fb923c;
   --severity-critical: #f43f5e;
   --success: #34d399;
+  --code-keyword: #c084fc;
+  --code-string: #fbbf24;
+  --code-type: #38bdf8;
+  --code-annotation: #a78bfa;
+  --code-comment: #3a506e;
+  --code-number: #22d3ee;
   --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
   --font-mono: 'Source Code Pro', 'Menlo', monospace;
   color-scheme: dark;
@@ -52,6 +57,12 @@
     --severity-high: #ea580c;
     --severity-critical: #e11d48;
     --success: #059669;
+    --code-keyword: #7c3aed;
+    --code-string: #b45309;
+    --code-type: #0369a1;
+    --code-annotation: #6d28d9;
+    --code-comment: #9aa5b4;
+    --code-number: #0e7490;
     color-scheme: light;
   }
 }
@@ -73,6 +84,12 @@
   --severity-high: #ea580c;
   --severity-critical: #e11d48;
   --success: #059669;
+  --code-keyword: #7c3aed;
+  --code-string: #b45309;
+  --code-type: #0369a1;
+  --code-annotation: #6d28d9;
+  --code-comment: #9aa5b4;
+  --code-number: #0e7490;
   color-scheme: light;
 }
 
@@ -84,9 +101,7 @@ body {
   padding-inline: 20px;
   padding-block: 0;
 }
-
 *, *::before, *::after { box-sizing: border-box; }
-
 .container { max-width: 1100px; margin: 0 auto; }
 
 /* === NAV === */
@@ -102,275 +117,128 @@ body {
   padding: 14px 20px;
 }
 .nav-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 1.15rem;
-  color: var(--fg);
-  text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 1.15rem; color: var(--fg); text-decoration: none;
 }
 .nav-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--success);
-  box-shadow: 0 0 8px var(--success);
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--success); box-shadow: 0 0 8px var(--success);
   animation: pulse-dot 2s ease-in-out infinite;
 }
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-.nav-links {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.nav-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .nav-links a {
-  color: var(--fg-muted);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: color 0.2s, background 0.2s;
+  color: var(--fg-muted); text-decoration: none; font-size: 0.85rem;
+  font-weight: 500; padding: 6px 12px; border-radius: 6px; transition: color 0.2s, background 0.2s;
 }
 .nav-links a:hover { color: var(--fg); background: var(--accent-glow); }
 .btn-github {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--accent);
-  color: #000 !important;
-  font-weight: 600;
-  padding: 7px 16px !important;
-  border-radius: 8px;
-  transition: opacity 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent); color: #000 !important; font-weight: 600;
+  padding: 7px 16px !important; border-radius: 8px; transition: opacity 0.2s;
 }
 .btn-github:hover { opacity: 0.88; background: var(--accent) !important; }
 
 /* === HERO === */
-.hero {
-  padding: 80px 0 60px;
-  text-align: center;
-  position: relative;
-}
+.hero { padding: 80px 0 60px; text-align: center; }
 .hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--accent-glow);
-  border: 1px solid var(--accent-dim);
-  padding: 5px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--accent);
-  margin-bottom: 24px;
-  font-family: var(--font-mono);
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-glow); border: 1px solid var(--accent-dim);
+  padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;
+  color: var(--accent); margin-bottom: 24px; font-family: var(--font-mono);
 }
 .hero h1 {
-  font-size: clamp(2.8rem, 7vw, 4.5rem);
-  font-weight: 800;
-  line-height: 1.08;
-  margin: 0 0 20px;
-  text-wrap: balance;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.8rem, 7vw, 4.5rem); font-weight: 800;
+  line-height: 1.08; margin: 0 0 20px; text-wrap: balance; letter-spacing: -0.03em;
 }
 .hero h1 .gradient {
   background: linear-gradient(135deg, var(--accent), var(--severity-low));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .hero p {
-  font-size: 1.15rem;
-  color: var(--fg-muted);
-  max-width: 600px;
-  margin: 0 auto 36px;
-  line-height: 1.65;
+  font-size: 1.15rem; color: var(--fg-muted); max-width: 600px;
+  margin: 0 auto 36px; line-height: 1.65;
 }
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--accent);
-  color: #000;
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 12px 28px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: opacity 0.2s;
-  border: none;
-  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #000; font-weight: 600; font-size: 0.95rem;
+  padding: 12px 28px; border-radius: 10px; text-decoration: none;
+  transition: opacity 0.2s; border: none; cursor: pointer;
 }
 .btn-primary:hover { opacity: 0.88; }
 .btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-elevated);
-  color: var(--fg);
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 12px 28px;
-  border-radius: 10px;
-  text-decoration: none;
-  border: 1px solid var(--border);
-  transition: border-color 0.2s;
-  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--bg-elevated); color: var(--fg); font-weight: 600;
+  font-size: 0.95rem; padding: 12px 28px; border-radius: 10px;
+  text-decoration: none; border: 1px solid var(--border); transition: border-color 0.2s; cursor: pointer;
 }
 .btn-secondary:hover { border-color: var(--accent); }
 
 /* === SECTION === */
-.section {
-  padding: 64px 0;
-}
+.section { padding: 64px 0; }
 .section-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 10px;
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px;
 }
 .section-title {
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  font-weight: 700;
-  margin: 0 0 12px;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
+  font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700;
+  margin: 0 0 12px; letter-spacing: -0.02em; text-wrap: balance;
 }
-.section-desc {
-  color: var(--fg-muted);
-  font-size: 1rem;
-  max-width: 560px;
-  margin: 0 0 36px;
-}
+.section-desc { color: var(--fg-muted); font-size: 1rem; max-width: 560px; margin: 0 0 36px; }
 
 /* === LIVE SIMULATOR === */
 .sim-wrapper {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
 }
 .sim-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  gap: 12px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--border-subtle);
+  gap: 12px; flex-wrap: wrap;
 }
-.sim-header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.sim-header-left { display: flex; align-items: center; gap: 10px; }
 .sim-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--success);
-  font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 0.8rem; color: var(--success); font-weight: 500;
 }
 .sim-status .dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--success);
-  animation: pulse-dot 1.5s ease-in-out infinite;
+  background: var(--success); animation: pulse-dot 1.5s ease-in-out infinite;
 }
 .sim-entity {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--fg-muted);
-  background: var(--bg-elevated);
-  padding: 3px 10px;
-  border-radius: 4px;
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--fg-muted);
+  background: var(--bg-elevated); padding: 3px 10px; border-radius: 4px;
 }
-.sim-metrics {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.sim-metric {
-  text-align: right;
-}
+.sim-metrics { display: flex; gap: 20px; flex-wrap: wrap; }
+.sim-metric { text-align: right; }
 .sim-metric-value {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--fg);
-  line-height: 1.2;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 1.2rem; font-weight: 600; color: var(--fg); line-height: 1.2;
 }
 .sim-metric-label {
-  font-size: 0.7rem;
-  color: var(--fg-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.7rem; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.06em;
 }
-.sim-body {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-}
-@media (max-width: 800px) {
-  .sim-body { grid-template-columns: 1fr; }
-}
-.sim-chart-area {
-  padding: 16px;
-  min-height: 280px;
-  position: relative;
-}
-.sim-chart-area canvas {
-  width: 100%;
-  height: 260px;
-  display: block;
-}
+.sim-body { display: grid; grid-template-columns: 1fr 320px; }
+@media (max-width: 800px) { .sim-body { grid-template-columns: 1fr; } }
+.sim-chart-area { padding: 16px; min-height: 280px; position: relative; }
+.sim-chart-area canvas { width: 100%; height: 260px; display: block; }
 .sim-feed {
   border-left: 1px solid var(--border-subtle);
-  max-height: 292px;
-  overflow-y: auto;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  line-height: 1.55;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+  max-height: 292px; overflow-y: auto;
+  font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.55;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
 }
 @media (max-width: 800px) {
-  .sim-feed {
-    border-left: none;
-    border-top: 1px solid var(--border-subtle);
-    max-height: 200px;
-  }
+  .sim-feed { border-left: none; border-top: 1px solid var(--border-subtle); max-height: 200px; }
 }
 .feed-entry {
-  padding: 6px 14px;
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  padding: 6px 14px; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: flex-start; gap: 8px;
 }
 .feed-entry:last-child { border-bottom: none; }
 .feed-time { color: var(--fg-dim); white-space: nowrap; min-width: 58px; }
@@ -381,281 +249,207 @@ body {
 .feed-alert.high { color: var(--severity-high); }
 .feed-alert.critical { color: var(--severity-critical); }
 .severity-badge {
-  display: inline-block;
-  padding: 1px 6px;
-  border-radius: 3px;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  display: inline-block; padding: 1px 6px; border-radius: 3px;
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
 }
 .severity-badge.low { background: rgba(34,211,238,0.15); color: var(--severity-low); }
 .severity-badge.medium { background: rgba(251,191,36,0.15); color: var(--severity-medium); }
 .severity-badge.high { background: rgba(251,146,60,0.15); color: var(--severity-high); }
 .severity-badge.critical { background: rgba(244,63,94,0.18); color: var(--severity-critical); }
 
-/* === LEGEND === */
-.chart-legend {
-  display: flex;
-  gap: 16px;
-  padding: 6px 0 0;
-  flex-wrap: wrap;
-}
+.chart-legend { display: flex; gap: 16px; padding: 6px 0 0; flex-wrap: wrap; }
 .legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.72rem;
-  color: var(--fg-muted);
-  font-family: var(--font-mono);
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.72rem; color: var(--fg-muted); font-family: var(--font-mono);
 }
-.legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.legend-line { width: 16px; height: 2px; border-radius: 1px; }
+
+/* === SOURCE CODE === */
+.code-tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
-.legend-line {
-  width: 16px;
-  height: 2px;
-  border-radius: 1px;
+.code-tabs::-webkit-scrollbar { display: none; }
+.code-tab {
+  padding: 10px 18px; font-family: var(--font-mono); font-size: 0.78rem;
+  font-weight: 500; color: var(--fg-dim); background: none; border: none;
+  cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
 }
+.code-tab:hover { color: var(--fg-muted); }
+.code-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.code-panel { display: none; }
+.code-panel.active { display: block; }
+.code-block-wrapper {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.code-file-path {
+  padding: 10px 18px; border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-dim);
+  display: flex; align-items: center; gap: 8px;
+}
+.code-file-path .java-icon {
+  color: var(--severity-high); font-weight: 600;
+}
+pre.source-code {
+  margin: 0; padding: 20px; overflow-x: auto;
+  font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.7;
+  color: var(--fg); tab-size: 4;
+}
+pre.source-code .kw { color: var(--code-keyword); font-weight: 500; }
+pre.source-code .ty { color: var(--code-type); }
+pre.source-code .st { color: var(--code-string); }
+pre.source-code .an { color: var(--code-annotation); }
+pre.source-code .cm { color: var(--code-comment); font-style: italic; }
+pre.source-code .nu { color: var(--code-number); }
+pre.source-code .fn { color: var(--fg); font-weight: 500; }
+.code-note {
+  padding: 14px 18px; border-top: 1px solid var(--border-subtle);
+  font-size: 0.8rem; color: var(--fg-muted); line-height: 1.55;
+  background: var(--bg-elevated);
+}
+.code-note strong { color: var(--fg); font-weight: 600; }
 
 /* === ARCHITECTURE === */
 .arch-flow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin-top: 8px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px; margin-top: 8px;
 }
 .arch-step {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px 20px;
-  position: relative;
-  transition: border-color 0.3s;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px 20px; transition: border-color 0.3s;
 }
 .arch-step:hover { border-color: var(--accent); }
 .arch-step-num {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 10px;
-  letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  color: var(--accent); margin-bottom: 10px; letter-spacing: 0.05em;
 }
-.arch-step-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 6px;
+.arch-step-title { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+.arch-step-desc { font-size: 0.82rem; color: var(--fg-muted); line-height: 1.5; }
+.arch-step-tech { margin-top: 10px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-dim); }
+.arch-step-class {
+  margin-top: 6px; font-family: var(--font-mono); font-size: 0.68rem;
+  color: var(--code-type); opacity: 0.8;
 }
-.arch-step-desc {
-  font-size: 0.82rem;
-  color: var(--fg-muted);
-  line-height: 1.5;
-}
-.arch-step-tech {
-  margin-top: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--fg-dim);
-}
-.arch-arrow {
-  display: none;
-}
+.arch-arrow { display: none; }
 @media (min-width: 800px) {
   .arch-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--fg-dim);
-    font-size: 1.2rem;
-    min-width: 24px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--fg-dim); font-size: 1.2rem; min-width: 24px;
   }
-  .arch-flow {
-    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
-  }
+  .arch-flow { grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; }
 }
 
 /* === DETECTION MODEL === */
-.detection-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-@media (max-width: 700px) {
-  .detection-grid { grid-template-columns: 1fr; }
-}
+.detection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 700px) { .detection-grid { grid-template-columns: 1fr; } }
 .detection-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 28px 24px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 28px 24px;
 }
-.detection-card h3 {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin: 0 0 14px;
-}
+.detection-card h3 { font-size: 1.05rem; font-weight: 600; margin: 0 0 14px; }
 .formula {
-  font-family: var(--font-mono);
-  font-size: 1.3rem;
-  color: var(--accent);
-  padding: 16px;
-  background: var(--bg-elevated);
-  border-radius: 8px;
-  text-align: center;
-  margin-bottom: 14px;
-  font-weight: 500;
+  font-family: var(--font-mono); font-size: 1.3rem; color: var(--accent);
+  padding: 16px; background: var(--bg-elevated); border-radius: 8px;
+  text-align: center; margin-bottom: 14px; font-weight: 500;
 }
-.threshold-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
+.threshold-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .threshold-table th {
-  text-align: left;
-  font-weight: 600;
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--fg-muted);
+  text-align: left; font-weight: 600; padding: 8px 10px;
+  border-bottom: 1px solid var(--border); font-size: 0.75rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-muted);
 }
 .threshold-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--border-subtle);
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
+  padding: 8px 10px; border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
 }
 .threshold-table tr:last-child td { border-bottom: none; }
 
+/* === CONFIG === */
+.config-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+.config-item {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+}
+.config-key {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-dim);
+  margin-bottom: 4px;
+}
+.config-val {
+  font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600;
+  color: var(--accent); font-variant-numeric: tabular-nums;
+}
+
 /* === TECH STACK === */
 .stack-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;
 }
 .stack-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 18px;
-  transition: border-color 0.3s;
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px; transition: border-color 0.3s;
 }
 .stack-item:hover { border-color: var(--accent); }
 .stack-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
-  background: var(--bg-elevated);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--accent);
-  font-family: var(--font-mono);
-  flex-shrink: 0;
+  width: 38px; height: 38px; border-radius: 8px;
+  background: var(--bg-elevated); display: flex; align-items: center;
+  justify-content: center; font-size: 1.1rem; font-weight: 700;
+  color: var(--accent); font-family: var(--font-mono); flex-shrink: 0;
 }
-.stack-info h4 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0;
-}
-.stack-info p {
-  font-size: 0.78rem;
-  color: var(--fg-muted);
-  margin: 2px 0 0;
-}
+.stack-info h4 { font-size: 0.9rem; font-weight: 600; margin: 0; }
+.stack-info p { font-size: 0.78rem; color: var(--fg-muted); margin: 2px 0 0; }
 
-/* === CTA === */
-.cta-section {
-  text-align: center;
-  padding: 64px 0 80px;
-}
-.cta-section h2 {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 700;
-  margin: 0 0 12px;
-  letter-spacing: -0.02em;
-}
-.cta-section p {
-  color: var(--fg-muted);
-  font-size: 1rem;
-  margin: 0 0 28px;
-  max-width: 480px;
-  margin-inline: auto;
-}
-.cta-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-/* === API PREVIEW === */
+/* === API === */
 .api-block {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-top: 24px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; margin-top: 24px;
 }
+.api-block:first-of-type { margin-top: 0; }
 .api-block-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--border-subtle);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono); font-size: 0.8rem;
 }
 .api-method {
-  background: var(--accent-glow);
-  color: var(--accent);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.72rem;
+  background: var(--accent-glow); color: var(--accent);
+  padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.72rem;
 }
 .api-method.post { background: rgba(52,211,153,0.12); color: var(--success); }
 .api-path { color: var(--fg); font-weight: 500; }
 .api-desc { color: var(--fg-dim); margin-left: auto; font-size: 0.72rem; }
 pre.api-code {
-  margin: 0;
-  padding: 18px;
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  line-height: 1.6;
-  color: var(--fg-muted);
+  margin: 0; padding: 18px; overflow-x: auto;
+  font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.6; color: var(--fg-muted);
 }
 pre.api-code .key { color: var(--accent); }
 pre.api-code .str { color: var(--severity-medium); }
 pre.api-code .num { color: var(--severity-low); }
 pre.api-code .comment { color: var(--fg-dim); }
 
-/* === FOOTER === */
+/* === CTA === */
+.cta-section { text-align: center; padding: 64px 0 80px; }
+.cta-section h2 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700;
+  margin: 0 0 12px; letter-spacing: -0.02em;
+}
+.cta-section p {
+  color: var(--fg-muted); font-size: 1rem; margin: 0 0 28px;
+  max-width: 480px; margin-inline: auto;
+}
+.cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
 .footer {
-  text-align: center;
-  padding: 24px 0;
-  border-top: 1px solid var(--border-subtle);
-  font-size: 0.8rem;
-  color: var(--fg-dim);
+  text-align: center; padding: 24px 0; border-top: 1px solid var(--border-subtle);
+  font-size: 0.8rem; color: var(--fg-dim);
 }
 .footer a { color: var(--fg-muted); text-decoration: none; }
 .footer a:hover { color: var(--accent); }
 
-/* === REDUCED MOTION === */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 </style>
 </head>
@@ -664,12 +458,10 @@ pre.api-code .comment { color: var(--fg-dim); }
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
-    <span class="nav-brand">
-      <span class="nav-dot"></span>
-      Sentinel
-    </span>
+    <span class="nav-brand"><span class="nav-dot"></span> Sentinel</span>
     <div class="nav-links">
       <a href="#demo">Live Demo</a>
+      <a href="#source">Source Code</a>
       <a href="#architecture">Architecture</a>
       <a href="#detection">Detection</a>
       <a href="https://github.com/taniyanandi/sentinel" target="_blank" rel="noopener" class="btn-github">
@@ -680,8 +472,9 @@ pre.api-code .comment { color: var(--fg-dim); }
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="container">
+
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-badge">STREAMING &middot; STATEFUL &middot; REAL-TIME</div>
     <h1>Anomaly detection<br>at <span class="gradient">stream speed</span></h1>
@@ -699,7 +492,7 @@ pre.api-code .comment { color: var(--fg-dim); }
   <section class="section" id="demo">
     <div class="section-label">Live Simulator</div>
     <div class="section-title">Real-time anomaly detection</div>
-    <div class="section-desc">Welford's algorithm running in your browser. Events flow through the same statistical model Sentinel uses in production — watch z-scores cross thresholds and trigger alerts.</div>
+    <div class="section-desc">The same Welford's algorithm from <code style="font-family:var(--font-mono);color:var(--code-type);font-size:0.9em">DetectionState.java</code> running in your browser. Same warmup (30 events), same z-threshold (3.0), same severity tiers.</div>
 
     <div class="sim-wrapper">
       <div class="sim-header">
@@ -717,11 +510,11 @@ pre.api-code .comment { color: var(--fg-dim); }
             <div class="sim-metric-label">Anomalies</div>
           </div>
           <div class="sim-metric">
-            <div class="sim-metric-value" id="metric-mean">—</div>
+            <div class="sim-metric-value" id="metric-mean">&mdash;</div>
             <div class="sim-metric-label">Mean (ms)</div>
           </div>
           <div class="sim-metric">
-            <div class="sim-metric-value" id="metric-stddev">—</div>
+            <div class="sim-metric-value" id="metric-stddev">&mdash;</div>
             <div class="sim-metric-label">Std Dev</div>
           </div>
         </div>
@@ -733,11 +526,325 @@ pre.api-code .comment { color: var(--fg-dim); }
             <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span> Normal</div>
             <div class="legend-item"><span class="legend-dot" style="background:var(--severity-critical)"></span> Anomaly</div>
             <div class="legend-line" style="background:var(--success)"></div>
-            <div class="legend-item" style="margin-left:-11px">Mean (μ)</div>
-            <div class="legend-item"><span class="legend-dot" style="background:var(--accent);opacity:0.15;width:16px;height:10px;border-radius:3px"></span> ±3σ band</div>
+            <div class="legend-item" style="margin-left:-11px">Mean (&mu;)</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--accent);opacity:0.15;width:16px;height:10px;border-radius:3px"></span> &plusmn;3&sigma; band</div>
           </div>
         </div>
         <div class="sim-feed" id="sim-feed"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOURCE CODE -->
+  <section class="section" id="source">
+    <div class="section-label">Source Code</div>
+    <div class="section-title">Straight from the repository</div>
+    <div class="section-desc">These are the actual Java classes that power Sentinel. Not pseudocode, not simplified — the real production source.</div>
+
+    <div class="code-block-wrapper">
+      <div class="code-tabs" role="tablist">
+        <button class="code-tab active" role="tab" data-panel="panel-state">DetectionState.java</button>
+        <button class="code-tab" role="tab" data-panel="panel-detector">AnomalyDetector.java</button>
+        <button class="code-tab" role="tab" data-panel="panel-stream">EventStreamProcessor.java</button>
+        <button class="code-tab" role="tab" data-panel="panel-listener">AlertPersistenceListener.java</button>
+        <button class="code-tab" role="tab" data-panel="panel-domain">Domain Records</button>
+        <button class="code-tab" role="tab" data-panel="panel-metrics">SentinelMetrics.java</button>
+      </div>
+
+      <!-- DetectionState.java -->
+      <div class="code-panel active" id="panel-state">
+        <div class="code-file-path">
+          <span class="java-icon">&#9670;</span>
+          src/main/java/com/taniyanandi/sentinel/domain/DetectionState.java
+        </div>
+        <pre class="source-code"><span class="kw">package</span> com.taniyanandi.sentinel.domain;
+
+<span class="kw">import</span> java.io.Serializable;
+
+<span class="kw">public class</span> <span class="ty">DetectionState</span> <span class="kw">implements</span> <span class="ty">Serializable</span> {
+    <span class="kw">private long</span> count;
+    <span class="kw">private double</span> mean;
+    <span class="kw">private double</span> m2;
+
+    <span class="kw">public</span> <span class="fn">DetectionState</span>() {}
+
+    <span class="kw">public void</span> <span class="fn">observe</span>(<span class="kw">double</span> value) {
+        count++;
+        <span class="kw">double</span> delta = value - mean;
+        mean += delta / count;
+        <span class="kw">double</span> delta2 = value - mean;
+        m2 += delta * delta2;
+    }
+
+    <span class="kw">public long</span> <span class="fn">count</span>() { <span class="kw">return</span> count; }
+    <span class="kw">public double</span> <span class="fn">mean</span>() { <span class="kw">return</span> mean; }
+    <span class="kw">public double</span> <span class="fn">variance</span>() { <span class="kw">return</span> count > <span class="nu">1</span> ? m2 / (count - <span class="nu">1</span>) : <span class="nu">0.0</span>; }
+    <span class="kw">public double</span> <span class="fn">stdDev</span>() { <span class="kw">return</span> <span class="ty">Math</span>.sqrt(variance()); }
+}</pre>
+        <div class="code-note">
+          <strong>Welford's online algorithm.</strong> Updates mean and variance in O(1) memory per key using Bessel-corrected incremental computation.
+          The <code>m2</code> field accumulates the sum of squared differences — no event history is ever stored.
+          This class is serialized into Kafka Streams' persistent RocksDB state store, keyed by <code>entityId|metric</code>.
+        </div>
+      </div>
+
+      <!-- AnomalyDetector.java -->
+      <div class="code-panel" id="panel-detector">
+        <div class="code-file-path">
+          <span class="java-icon">&#9670;</span>
+          src/main/java/com/taniyanandi/sentinel/service/AnomalyDetector.java
+        </div>
+        <pre class="source-code"><span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">AnomalyDetector</span> {
+    <span class="kw">private final long</span> warmupEvents;
+    <span class="kw">private final double</span> zThreshold;
+    <span class="kw">private final</span> <span class="ty">SentinelMetrics</span> metrics;
+
+    <span class="kw">public</span> <span class="fn">AnomalyDetector</span>(
+            <span class="an">@Value</span>(<span class="st">"${sentinel.detector.warmup-events:30}"</span>) <span class="kw">long</span> warmupEvents,
+            <span class="an">@Value</span>(<span class="st">"${sentinel.detector.z-threshold:3.0}"</span>) <span class="kw">double</span> zThreshold,
+            <span class="ty">SentinelMetrics</span> metrics) {
+        <span class="kw">this</span>.warmupEvents = warmupEvents;
+        <span class="kw">this</span>.zThreshold = zThreshold;
+        <span class="kw">this</span>.metrics = metrics;
+    }
+
+    <span class="kw">public</span> <span class="ty">AnomalyAlert</span> <span class="fn">evaluate</span>(<span class="ty">TelemetryEvent</span> event, <span class="ty">DetectionState</span> state) {
+        <span class="kw">return</span> metrics.detectionLatency().record(
+            () -> evaluateInternal(event, state));
+    }
+
+    <span class="kw">private</span> <span class="ty">AnomalyAlert</span> <span class="fn">evaluateInternal</span>(<span class="ty">TelemetryEvent</span> event, <span class="ty">DetectionState</span> state) {
+        <span class="cm">// Skip detection during warmup or if stdDev is negligible</span>
+        <span class="kw">if</span> (state.count() < warmupEvents || state.stdDev() < <span class="nu">1e-9</span>) {
+            state.observe(event.value());
+            <span class="kw">return null</span>;
+        }
+
+        <span class="kw">double</span> mean = state.mean(), stdDev = state.stdDev();
+        <span class="kw">double</span> z = <span class="ty">Math</span>.abs(event.value() - mean) / stdDev;
+        state.observe(event.value());
+
+        <span class="kw">if</span> (z < zThreshold) <span class="kw">return null</span>;
+
+        <span class="ty">AnomalyAlert</span>.<span class="ty">Severity</span> severity =
+            z >= <span class="nu">6</span> ? <span class="ty">AnomalyAlert</span>.<span class="ty">Severity</span>.CRITICAL :
+            z >= <span class="nu">5</span> ? <span class="ty">AnomalyAlert</span>.<span class="ty">Severity</span>.HIGH :
+            z >= <span class="nu">4</span> ? <span class="ty">AnomalyAlert</span>.<span class="ty">Severity</span>.MEDIUM :
+                     <span class="ty">AnomalyAlert</span>.<span class="ty">Severity</span>.LOW;
+
+        metrics.anomalyDetected(severity == <span class="ty">AnomalyAlert</span>.<span class="ty">Severity</span>.CRITICAL);
+
+        <span class="kw">return new</span> <span class="ty">AnomalyAlert</span>(
+            <span class="ty">UUID</span>.randomUUID().toString(),
+            event.eventId(), event.entityId(), event.metric(),
+            event.value(), mean, stdDev, z, severity,
+            <span class="st">"Value deviated "</span> + <span class="ty">String</span>.format(<span class="st">"%.2f"</span>, z)
+                + <span class="st">" standard deviations from baseline"</span>,
+            <span class="ty">Instant</span>.now());
+    }
+}</pre>
+        <div class="code-note">
+          <strong>The core detection loop.</strong> Z-score is computed <em>before</em> the new value updates the baseline —
+          so the current observation doesn't shift the statistics it's measured against. Detection latency is instrumented
+          via Micrometer's <code>Timer</code>. Config: warmup = 30, z-threshold = 3.0 from <code>application.yml</code>.
+        </div>
+      </div>
+
+      <!-- EventStreamProcessor.java -->
+      <div class="code-panel" id="panel-stream">
+        <div class="code-file-path">
+          <span class="java-icon">&#9670;</span>
+          src/main/java/com/taniyanandi/sentinel/stream/EventStreamProcessor.java
+        </div>
+        <pre class="source-code"><span class="an">@Configuration</span>
+<span class="kw">public class</span> <span class="ty">EventStreamProcessor</span> {
+    <span class="kw">private final</span> <span class="ty">AnomalyDetector</span> detector;
+    <span class="kw">private final</span> <span class="ty">String</span> eventsTopic;   <span class="cm">// sentinel.events</span>
+    <span class="kw">private final</span> <span class="ty">String</span> alertsTopic;   <span class="cm">// sentinel.alerts</span>
+
+    <span class="an">@Bean</span>
+    <span class="ty">KStream</span>&lt;<span class="ty">String</span>, <span class="ty">TelemetryEvent</span>&gt; <span class="fn">topology</span>(<span class="ty">StreamsBuilder</span> builder) {
+        <span class="cm">// Persistent state store backed by RocksDB</span>
+        <span class="ty">StoreBuilder</span>&lt;<span class="ty">KeyValueStore</span>&lt;<span class="ty">String</span>, <span class="ty">DetectionState</span>&gt;&gt; stateStore =
+            <span class="ty">Stores</span>.keyValueStoreBuilder(
+                <span class="ty">Stores</span>.persistentKeyValueStore(<span class="st">"baseline-store"</span>),
+                <span class="ty">Serdes</span>.String(), stateSerde);
+        builder.addStateStore(stateStore);
+
+        <span class="ty">KStream</span>&lt;<span class="ty">String</span>, <span class="ty">TelemetryEvent</span>&gt; events =
+            builder.stream(eventsTopic, <span class="ty">Consumed</span>.with(<span class="ty">Serdes</span>.String(), eventSerde));
+
+        <span class="ty">KStream</span>&lt;<span class="ty">String</span>, <span class="ty">AnomalyAlert</span>&gt; alerts = events
+            <span class="cm">// Re-key by entityId|metric for per-key state isolation</span>
+            .selectKey((key, event) ->
+                event.entityId() + <span class="st">"|"</span> + event.metric())
+            .transform(() -> <span class="kw">new</span> <span class="ty">Transformer</span>&lt;&gt;() {
+                <span class="kw">private</span> <span class="ty">KeyValueStore</span>&lt;<span class="ty">String</span>, <span class="ty">DetectionState</span>&gt; store;
+
+                <span class="an">@Override</span>
+                <span class="kw">public void</span> <span class="fn">init</span>(<span class="ty">ProcessorContext</span> context) {
+                    store = context.getStateStore(<span class="st">"baseline-store"</span>);
+                }
+
+                <span class="an">@Override</span>
+                <span class="kw">public</span> <span class="ty">KeyValue</span>&lt;<span class="ty">String</span>, <span class="ty">AnomalyAlert</span>&gt; <span class="fn">transform</span>(
+                        <span class="ty">String</span> key, <span class="ty">TelemetryEvent</span> event) {
+                    <span class="ty">DetectionState</span> state = store.get(key);
+                    <span class="kw">if</span> (state == <span class="kw">null</span>) state = <span class="kw">new</span> <span class="ty">DetectionState</span>();
+                    <span class="ty">AnomalyAlert</span> alert = detector.evaluate(event, state);
+                    store.put(key, state);
+                    <span class="kw">return</span> alert == <span class="kw">null</span> ? <span class="kw">null</span>
+                        : <span class="ty">KeyValue</span>.pair(key, alert);
+                }
+            }, <span class="ty">Named</span>.as(<span class="st">"anomaly-detector"</span>), <span class="st">"baseline-store"</span>)
+            .filter((key, alert) -> alert != <span class="kw">null</span>);
+
+        alerts.to(alertsTopic, <span class="ty">Produced</span>.with(<span class="ty">Serdes</span>.String(), alertSerde));
+        <span class="kw">return</span> events;
+    }
+}</pre>
+        <div class="code-note">
+          <strong>Kafka Streams topology.</strong> Events are re-keyed by <code>entityId|metric</code> so each key gets its own
+          <code>DetectionState</code> in the persistent state store. The transformer loads state from RocksDB, runs detection,
+          writes state back, and emits alerts downstream. Runs with <code>processing.guarantee: exactly_once_v2</code>.
+        </div>
+      </div>
+
+      <!-- AlertPersistenceListener.java -->
+      <div class="code-panel" id="panel-listener">
+        <div class="code-file-path">
+          <span class="java-icon">&#9670;</span>
+          src/main/java/com/taniyanandi/sentinel/service/AlertPersistenceListener.java
+        </div>
+        <pre class="source-code"><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">AlertPersistenceListener</span> {
+    <span class="kw">private final</span> <span class="ty">AlertRepository</span> repository;
+
+    <span class="kw">public</span> <span class="fn">AlertPersistenceListener</span>(<span class="ty">AlertRepository</span> repository) {
+        <span class="kw">this</span>.repository = repository;
+    }
+
+    <span class="an">@Transactional</span>
+    <span class="an">@KafkaListener</span>(
+        topics = <span class="st">"${sentinel.kafka.alerts-topic:sentinel.alerts}"</span>,
+        groupId = <span class="st">"sentinel-alert-persistence"</span>)
+    <span class="kw">public void</span> <span class="fn">persist</span>(<span class="ty">AnomalyAlert</span> alert) {
+        <span class="cm">// Idempotent: skip if alert already persisted</span>
+        <span class="kw">if</span> (repository.existsById(alert.alertId())) <span class="kw">return</span>;
+
+        repository.save(<span class="kw">new</span> <span class="ty">AlertEntity</span>(
+            alert.alertId(), alert.eventId(),
+            alert.entityId(), alert.metric(),
+            alert.value(), alert.baselineMean(),
+            alert.baselineStdDev(), alert.zScore(),
+            <span class="ty">AlertEntity</span>.<span class="ty">Severity</span>.valueOf(alert.severity().name()),
+            alert.reason(), alert.detectedAt()));
+    }
+}</pre>
+        <div class="code-note">
+          <strong>Idempotent persistence.</strong> The listener consumes from the <code>sentinel.alerts</code> topic and
+          writes to PostgreSQL. The <code>existsById</code> check ensures duplicate delivery (from Kafka rebalances or
+          retries) never creates duplicate rows. This sink is <em>not</em> part of the Kafka transaction — a deliberate
+          design choice documented in ADR-002.
+        </div>
+      </div>
+
+      <!-- Domain Records -->
+      <div class="code-panel" id="panel-domain">
+        <div class="code-file-path">
+          <span class="java-icon">&#9670;</span>
+          src/main/java/com/taniyanandi/sentinel/domain/
+        </div>
+        <pre class="source-code"><span class="cm">// TelemetryEvent.java — Immutable event record</span>
+<span class="kw">public record</span> <span class="ty">TelemetryEvent</span>(
+        <span class="ty">String</span> eventId,
+        <span class="ty">String</span> source,
+        <span class="ty">String</span> entityId,       <span class="cm">// Kafka partition key</span>
+        <span class="ty">String</span> metric,
+        <span class="kw">double</span> value,
+        <span class="ty">Instant</span> timestamp,
+        <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; attributes) {}
+
+
+<span class="cm">// AnomalyAlert.java — Emitted when z &ge; threshold</span>
+<span class="kw">public record</span> <span class="ty">AnomalyAlert</span>(
+        <span class="ty">String</span> alertId,
+        <span class="ty">String</span> eventId,
+        <span class="ty">String</span> entityId,
+        <span class="ty">String</span> metric,
+        <span class="kw">double</span> value,
+        <span class="kw">double</span> baselineMean,
+        <span class="kw">double</span> baselineStdDev,
+        <span class="kw">double</span> zScore,
+        <span class="ty">Severity</span> severity,
+        <span class="ty">String</span> reason,
+        <span class="ty">Instant</span> detectedAt) {
+
+    <span class="kw">public enum</span> <span class="ty">Severity</span> { LOW, MEDIUM, HIGH, CRITICAL }
+}
+
+
+<span class="cm">// EventRequest.java — API DTO with Bean Validation</span>
+<span class="kw">public record</span> <span class="ty">EventRequest</span>(
+        <span class="an">@NotBlank</span> <span class="ty">String</span> eventId,
+        <span class="an">@NotBlank</span> <span class="ty">String</span> source,
+        <span class="an">@NotBlank</span> <span class="ty">String</span> entityId,
+        <span class="an">@NotBlank</span> <span class="ty">String</span> metric,
+        <span class="an">@PositiveOrZero</span> <span class="kw">double</span> value,
+        <span class="an">@NotNull</span> <span class="ty">Instant</span> timestamp,
+        <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; attributes) {}</pre>
+        <div class="code-note">
+          <strong>Java 21 records</strong> for immutable domain objects. <code>TelemetryEvent</code> flows through Kafka, keyed by
+          <code>entityId</code> for partition-aware ordering. <code>AnomalyAlert</code> carries the full statistical context:
+          the value, baseline mean, stdDev, z-score, and severity tier. <code>EventRequest</code> validates at the API boundary
+          with Jakarta Bean Validation annotations.
+        </div>
+      </div>
+
+      <!-- SentinelMetrics.java -->
+      <div class="code-panel" id="panel-metrics">
+        <div class="code-file-path">
+          <span class="java-icon">&#9670;</span>
+          src/main/java/com/taniyanandi/sentinel/metrics/SentinelMetrics.java
+        </div>
+        <pre class="source-code"><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">SentinelMetrics</span> {
+    <span class="kw">private final</span> <span class="ty">Counter</span> ingested;
+    <span class="kw">private final</span> <span class="ty">Counter</span> anomalies;
+    <span class="kw">private final</span> <span class="ty">Counter</span> criticalAnomalies;
+    <span class="kw">private final</span> <span class="ty">Timer</span> detectionLatency;
+
+    <span class="kw">public</span> <span class="fn">SentinelMetrics</span>(<span class="ty">MeterRegistry</span> registry) {
+        ingested = <span class="ty">Counter</span>.builder(<span class="st">"sentinel.events.ingested"</span>)
+            .description(<span class="st">"Events accepted by the ingestion API"</span>)
+            .register(registry);
+
+        anomalies = <span class="ty">Counter</span>.builder(<span class="st">"sentinel.anomalies.detected"</span>)
+            .description(<span class="st">"Anomalies emitted by the detector"</span>)
+            .register(registry);
+
+        criticalAnomalies = <span class="ty">Counter</span>.builder(<span class="st">"sentinel.anomalies.critical"</span>)
+            .description(<span class="st">"Critical anomalies emitted"</span>)
+            .register(registry);
+
+        detectionLatency = <span class="ty">Timer</span>.builder(<span class="st">"sentinel.detection.latency"</span>)
+            .description(<span class="st">"Anomaly detection evaluation latency"</span>)
+            .register(registry);
+    }
+
+    <span class="kw">public void</span> <span class="fn">eventIngested</span>() { ingested.increment(); }
+    <span class="kw">public void</span> <span class="fn">anomalyDetected</span>(<span class="kw">boolean</span> critical) {
+        anomalies.increment();
+        <span class="kw">if</span> (critical) criticalAnomalies.increment();
+    }
+    <span class="kw">public</span> <span class="ty">Timer</span> <span class="fn">detectionLatency</span>() { <span class="kw">return</span> detectionLatency; }
+}</pre>
+        <div class="code-note">
+          <strong>Micrometer instrumentation.</strong> Four metrics scraped by Prometheus: ingestion volume,
+          anomaly rate, critical anomaly rate, and detection latency. These feed the Grafana dashboards
+          for production observability.
+        </div>
       </div>
     </div>
   </section>
@@ -746,35 +853,75 @@ pre.api-code .comment { color: var(--fg-dim); }
   <section class="section" id="architecture">
     <div class="section-label">Architecture</div>
     <div class="section-title">Event-driven pipeline</div>
-    <div class="section-desc">Partition-aware ordering, stateful stream processing, idempotent persistence — every stage has a documented design rationale.</div>
+    <div class="section-desc">Every class name maps to a real file. Every design choice has an ADR.</div>
 
     <div class="arch-flow">
       <div class="arch-step">
         <div class="arch-step-num">01 INGEST</div>
         <div class="arch-step-title">REST API</div>
-        <div class="arch-step-desc">Events validated and accepted with 202. Partitioned by entityId for ordering guarantees.</div>
+        <div class="arch-step-desc">Events validated with Bean Validation, accepted with <code>202</code>. Partitioned by <code>entityId</code> for ordering guarantees.</div>
         <div class="arch-step-tech">Spring Boot &middot; Bean Validation</div>
+        <div class="arch-step-class">EventController &rarr; EventIngestionService</div>
       </div>
       <div class="arch-arrow">&rarr;</div>
       <div class="arch-step">
         <div class="arch-step-num">02 STREAM</div>
         <div class="arch-step-title">Kafka Streams</div>
-        <div class="arch-step-desc">Re-keyed by entityId|metric. Stateful transformer with RocksDB-backed state store. exactly_once_v2.</div>
+        <div class="arch-step-desc">Re-keyed by <code>entityId|metric</code>. Stateful transformer with RocksDB-backed <code>baseline-store</code>. <code>exactly_once_v2</code>.</div>
         <div class="arch-step-tech">Kafka &middot; 6 partitions</div>
+        <div class="arch-step-class">EventStreamProcessor</div>
       </div>
       <div class="arch-arrow">&rarr;</div>
       <div class="arch-step">
         <div class="arch-step-num">03 DETECT</div>
         <div class="arch-step-title">Anomaly Detector</div>
-        <div class="arch-step-desc">Welford's online algorithm: O(1) memory per key. Z-score severity tiers after configurable warmup.</div>
+        <div class="arch-step-desc">Welford's online algorithm: O(1) memory per key. Z-score severity tiers after 30-event warmup.</div>
         <div class="arch-step-tech">Statistics &middot; O(1) memory</div>
+        <div class="arch-step-class">AnomalyDetector &rarr; DetectionState</div>
       </div>
       <div class="arch-arrow">&rarr;</div>
       <div class="arch-step">
         <div class="arch-step-num">04 PERSIST</div>
         <div class="arch-step-title">PostgreSQL</div>
-        <div class="arch-step-desc">Idempotent upsert on alert_id. Composite indexes for recent-alerts and severity queries.</div>
+        <div class="arch-step-desc">Idempotent on <code>alert_id</code>. Composite indexes on <code>(entity_id, metric, detected_at)</code> and <code>(severity, detected_at)</code>.</div>
         <div class="arch-step-tech">JPA &middot; Idempotent sink</div>
+        <div class="arch-step-class">AlertPersistenceListener &rarr; AlertEntity</div>
+      </div>
+    </div>
+
+    <!-- Config values from application.yml -->
+    <div class="config-grid">
+      <div class="config-item">
+        <div class="config-key">sentinel.detector.warmup-events</div>
+        <div class="config-val">30</div>
+      </div>
+      <div class="config-item">
+        <div class="config-key">sentinel.detector.z-threshold</div>
+        <div class="config-val">3.0</div>
+      </div>
+      <div class="config-item">
+        <div class="config-key">sentinel.kafka.events-topic</div>
+        <div class="config-val">sentinel.events</div>
+      </div>
+      <div class="config-item">
+        <div class="config-key">sentinel.kafka.alerts-topic</div>
+        <div class="config-val">sentinel.alerts</div>
+      </div>
+      <div class="config-item">
+        <div class="config-key">processing.guarantee</div>
+        <div class="config-val">exactly_once_v2</div>
+      </div>
+      <div class="config-item">
+        <div class="config-key">partitions (events &amp; alerts)</div>
+        <div class="config-val">6</div>
+      </div>
+      <div class="config-item">
+        <div class="config-key">producer.acks</div>
+        <div class="config-val">all</div>
+      </div>
+      <div class="config-item">
+        <div class="config-key">enable.idempotence</div>
+        <div class="config-val">true</div>
       </div>
     </div>
   </section>
@@ -783,25 +930,25 @@ pre.api-code .comment { color: var(--fg-dim); }
   <section class="section" id="detection">
     <div class="section-label">Detection Model</div>
     <div class="section-title">Online z-score detection</div>
-    <div class="section-desc">Explainable, deterministic, and constant-memory. Welford's algorithm updates the running mean and variance with each event — no historical data retained.</div>
+    <div class="section-desc">From <code style="font-family:var(--font-mono);color:var(--code-type);font-size:0.9em">AnomalyDetector.evaluateInternal()</code> — explainable, deterministic, constant-memory.</div>
 
     <div class="detection-grid">
       <div class="detection-card">
         <h3>Welford's Algorithm</h3>
         <div class="formula">z = |x &minus; &mu;| / &sigma;</div>
-        <p style="font-size:0.85rem;color:var(--fg-muted);margin:0;line-height:1.6">After a configurable warmup phase (default: 30 events per entity/metric key), each incoming value is scored against the running baseline. The algorithm updates mean and variance in O(1) using Bessel-corrected incremental computation — no event history is stored.</p>
+        <p style="font-size:0.85rem;color:var(--fg-muted);margin:0;line-height:1.6">After <code>warmupEvents</code> (30) observations per <code>entityId|metric</code> key, each incoming value is scored against the running baseline. The z-score is computed <em>before</em> <code>state.observe()</code> updates the mean — so the observation doesn't shift the statistics it's measured against.</p>
       </div>
       <div class="detection-card">
         <h3>Severity Tiers</h3>
         <table class="threshold-table">
           <thead>
-            <tr><th>Z-Score</th><th>Severity</th><th>Signal</th></tr>
+            <tr><th>Z-Score</th><th>Severity</th><th>From Source</th></tr>
           </thead>
           <tbody>
-            <tr><td>&ge; 3.0</td><td><span class="severity-badge low">LOW</span></td><td>Notable deviation</td></tr>
-            <tr><td>&ge; 4.0</td><td><span class="severity-badge medium">MEDIUM</span></td><td>Significant outlier</td></tr>
-            <tr><td>&ge; 5.0</td><td><span class="severity-badge high">HIGH</span></td><td>Severe anomaly</td></tr>
-            <tr><td>&ge; 6.0</td><td><span class="severity-badge critical">CRITICAL</span></td><td>System-level alert</td></tr>
+            <tr><td>&ge; 3.0</td><td><span class="severity-badge low">LOW</span></td><td>z &lt; zThreshold &rarr; null</td></tr>
+            <tr><td>&ge; 4.0</td><td><span class="severity-badge medium">MEDIUM</span></td><td>z &ge; 4 ? MEDIUM</td></tr>
+            <tr><td>&ge; 5.0</td><td><span class="severity-badge high">HIGH</span></td><td>z &ge; 5 ? HIGH</td></tr>
+            <tr><td>&ge; 6.0</td><td><span class="severity-badge critical">CRITICAL</span></td><td>z &ge; 6 ? CRITICAL</td></tr>
           </tbody>
         </table>
       </div>
@@ -811,43 +958,57 @@ pre.api-code .comment { color: var(--fg-dim); }
   <!-- API -->
   <section class="section" id="api">
     <div class="section-label">API</div>
-    <div class="section-title">Event ingestion</div>
-    <div class="section-desc">Send telemetry, query anomalies. Clean REST endpoints with Swagger documentation.</div>
+    <div class="section-title">REST endpoints</div>
+    <div class="section-desc">Real request/response shapes from <code style="font-family:var(--font-mono);color:var(--code-type);font-size:0.9em">EventController</code> and <code style="font-family:var(--font-mono);color:var(--code-type);font-size:0.9em">AlertController</code>.</div>
 
     <div class="api-block">
       <div class="api-block-header">
         <span class="api-method post">POST</span>
         <span class="api-path">/v1/events</span>
-        <span class="api-desc">Ingest a telemetry event</span>
+        <span class="api-desc">EventController.ingest() &rarr; 202 Accepted</span>
       </div>
-      <pre class="api-code">{
-  <span class="key">"eventId"</span>: <span class="str">"evt-1001"</span>,
-  <span class="key">"source"</span>: <span class="str">"payment-service"</span>,
-  <span class="key">"entityId"</span>: <span class="str">"merchant-42"</span>,
-  <span class="key">"metric"</span>: <span class="str">"latency_ms"</span>,
-  <span class="key">"value"</span>: <span class="num">125.4</span>,
-  <span class="key">"timestamp"</span>: <span class="str">"2026-09-07T10:00:00Z"</span>,
-  <span class="key">"attributes"</span>: { <span class="key">"region"</span>: <span class="str">"ap-south-1"</span> }
+      <pre class="api-code"><span class="comment">// Matches EventRequest record fields exactly:</span>
+{
+  <span class="key">"eventId"</span>: <span class="str">"evt-1001"</span>,           <span class="comment">// @NotBlank</span>
+  <span class="key">"source"</span>: <span class="str">"payment-service"</span>,     <span class="comment">// @NotBlank</span>
+  <span class="key">"entityId"</span>: <span class="str">"merchant-42"</span>,       <span class="comment">// @NotBlank — Kafka partition key</span>
+  <span class="key">"metric"</span>: <span class="str">"latency_ms"</span>,         <span class="comment">// @NotBlank</span>
+  <span class="key">"value"</span>: <span class="num">125.4</span>,                 <span class="comment">// @PositiveOrZero</span>
+  <span class="key">"timestamp"</span>: <span class="str">"2026-09-07T10:00:00Z"</span>, <span class="comment">// @NotNull</span>
+  <span class="key">"attributes"</span>: { <span class="key">"region"</span>: <span class="str">"ap-south-1"</span>, <span class="key">"service"</span>: <span class="str">"checkout"</span> }
 }</pre>
     </div>
 
     <div class="api-block" style="margin-top:12px">
       <div class="api-block-header">
         <span class="api-method">GET</span>
-        <span class="api-path">/v1/alerts/severity/CRITICAL</span>
-        <span class="api-desc">Query critical anomalies</span>
+        <span class="api-path">/v1/alerts/severity/CRITICAL?limit=20</span>
+        <span class="api-desc">AlertController.bySeverity()</span>
       </div>
-      <pre class="api-code"><span class="comment">// Response: 200 OK</span>
+      <pre class="api-code"><span class="comment">// Response matches AlertEntity JPA fields:</span>
 [{
-  <span class="key">"alertId"</span>: <span class="str">"alert-a7f3"</span>,
+  <span class="key">"alertId"</span>: <span class="str">"a7f3e2d1-..."</span>,       <span class="comment">// UUID — idempotent key</span>
+  <span class="key">"eventId"</span>: <span class="str">"evt-1001"</span>,
   <span class="key">"entityId"</span>: <span class="str">"merchant-42"</span>,
   <span class="key">"metric"</span>: <span class="str">"latency_ms"</span>,
   <span class="key">"value"</span>: <span class="num">892.1</span>,
   <span class="key">"baselineMean"</span>: <span class="num">125.3</span>,
+  <span class="key">"baselineStdDev"</span>: <span class="num">18.4</span>,
   <span class="key">"zScore"</span>: <span class="num">6.42</span>,
   <span class="key">"severity"</span>: <span class="str">"CRITICAL"</span>,
-  <span class="key">"reason"</span>: <span class="str">"Value 892.10 deviates 6.42σ from mean 125.30"</span>
+  <span class="key">"reason"</span>: <span class="str">"Value deviated 6.42 standard deviations from baseline"</span>,
+  <span class="key">"detectedAt"</span>: <span class="str">"2026-09-07T10:00:01.234Z"</span>
 }]</pre>
+    </div>
+
+    <div class="api-block" style="margin-top:12px">
+      <div class="api-block-header">
+        <span class="api-method">GET</span>
+        <span class="api-path">/v1/alerts?limit=50</span>
+        <span class="api-desc">AlertController.recent() &mdash; max 200</span>
+      </div>
+      <pre class="api-code"><span class="comment">// PageRequest.of(0, Math.min(Math.max(limit, 1), 200))</span>
+<span class="comment">// Ordered by detected_at DESC via idx_alert_severity_detected index</span></pre>
     </div>
   </section>
 
@@ -855,7 +1016,7 @@ pre.api-code .comment { color: var(--fg-dim); }
   <section class="section" id="stack">
     <div class="section-label">Tech Stack</div>
     <div class="section-title">Production-grade infrastructure</div>
-    <div class="section-desc">Every component chosen for a reason, every decision documented in an ADR.</div>
+    <div class="section-desc">Every component chosen for a reason — documented in ADR-001 (partitioning) and ADR-002 (state management).</div>
 
     <div class="stack-grid">
       <div class="stack-item">
@@ -868,15 +1029,15 @@ pre.api-code .comment { color: var(--fg-dim); }
       </div>
       <div class="stack-item">
         <div class="stack-icon">K</div>
-        <div class="stack-info"><h4>Apache Kafka</h4><p>Event streaming, 6 partitions, KRaft mode</p></div>
+        <div class="stack-info"><h4>Apache Kafka</h4><p>6 partitions, idempotent producer, acks=all</p></div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">KS</div>
-        <div class="stack-info"><h4>Kafka Streams</h4><p>Stateful processing, RocksDB state store</p></div>
+        <div class="stack-info"><h4>Kafka Streams</h4><p>exactly_once_v2, RocksDB baseline-store</p></div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">PG</div>
-        <div class="stack-info"><h4>PostgreSQL 16</h4><p>Durable alert storage, composite indexes</p></div>
+        <div class="stack-info"><h4>PostgreSQL 16</h4><p>Composite indexes, idempotent alert sink</p></div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">R</div>
@@ -884,7 +1045,7 @@ pre.api-code .comment { color: var(--fg-dim); }
       </div>
       <div class="stack-item">
         <div class="stack-icon" style="font-size:0.8rem">PM</div>
-        <div class="stack-info"><h4>Prometheus + Grafana</h4><p>Metrics, dashboards, alerting</p></div>
+        <div class="stack-info"><h4>Prometheus + Grafana</h4><p>sentinel.events.ingested, sentinel.anomalies.*</p></div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">TC</div>
@@ -912,7 +1073,19 @@ pre.api-code .comment { color: var(--fg-dim); }
 </div>
 
 <script>
+// === CODE TABS ===
+document.querySelectorAll('.code-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+  });
+});
+
 // === WELFORD SIMULATOR ===
+// This is the same algorithm as DetectionState.java:
+//   count++; delta = x - mean; mean += delta/count; delta2 = x - mean; m2 += delta*delta2;
 class Welford {
   constructor() { this.n = 0; this.mean = 0; this.m2 = 0; }
   observe(x) {
@@ -926,18 +1099,22 @@ class Welford {
   get stdDev() { return Math.sqrt(this.variance); }
 }
 
-// === STATE ===
+// Config from application.yml
+const CONFIG = {
+  warmupEvents: 30,        // sentinel.detector.warmup-events
+  zThreshold: 3.0,         // sentinel.detector.z-threshold
+  eventsTopic: 'sentinel.events',
+  alertsTopic: 'sentinel.alerts'
+};
+
 const state = {
   welford: new Welford(),
-  data: [],        // { value, time, isAnomaly, severity, zScore }
+  data: [],
   maxPoints: 80,
-  warmup: 30,
-  zThreshold: 3.0,
-  baseMean: 125,
+  baseMean: 125,       // Simulated latency_ms baseline
   baseStdDev: 18,
   eventCount: 0,
-  anomalyCount: 0,
-  running: true
+  anomalyCount: 0
 };
 
 // Normal distribution via Box-Muller
@@ -947,6 +1124,8 @@ function randNormal(mean, std) {
   return mean + std * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
 
+// Same severity logic as AnomalyDetector.evaluateInternal():
+// z >= 6 ? CRITICAL : z >= 5 ? HIGH : z >= 4 ? MEDIUM : LOW
 function getSeverity(z) {
   if (z >= 6) return 'critical';
   if (z >= 5) return 'high';
@@ -954,23 +1133,16 @@ function getSeverity(z) {
   return 'low';
 }
 
-function severityLabel(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-// === FEED ===
 const feed = document.getElementById('sim-feed');
 function addFeed(html) {
   const el = document.createElement('div');
   el.className = 'feed-entry';
-  const now = new Date();
-  const ts = now.toTimeString().slice(0, 8);
-  el.innerHTML = `<span class="feed-time">${ts}</span>${html}`;
+  const ts = new Date().toTimeString().slice(0, 8);
+  el.innerHTML = '<span class="feed-time">' + ts + '</span>' + html;
   feed.prepend(el);
   while (feed.children.length > 50) feed.removeChild(feed.lastChild);
 }
 
-// === CHART ===
 const canvas = document.getElementById('sim-canvas');
 const ctx = canvas.getContext('2d');
 
@@ -986,7 +1158,6 @@ function drawChart() {
   ctx.scale(dpr, dpr);
   const W = rect.width, H = rect.height;
 
-  const bg = getColor('--bg-surface');
   const grid = getColor('--border-subtle');
   const fgDim = getColor('--fg-dim');
   const accent = getColor('--accent');
@@ -997,7 +1168,6 @@ function drawChart() {
   const lowColor = getColor('--severity-low');
 
   ctx.clearRect(0, 0, W, H);
-
   const data = state.data;
   if (data.length < 2) return;
 
@@ -1005,15 +1175,11 @@ function drawChart() {
   const cw = W - pad.left - pad.right;
   const ch = H - pad.top - pad.bottom;
 
-  // Y range
   let yMin = Infinity, yMax = -Infinity;
-  for (const d of data) {
-    yMin = Math.min(yMin, d.value);
-    yMax = Math.max(yMax, d.value);
-  }
+  for (const d of data) { yMin = Math.min(yMin, d.value); yMax = Math.max(yMax, d.value); }
   const mean = state.welford.mean;
   const sd = state.welford.stdDev;
-  if (state.welford.n > state.warmup && sd > 0) {
+  if (state.welford.n > CONFIG.warmupEvents && sd > 0) {
     yMin = Math.min(yMin, mean - 4 * sd);
     yMax = Math.max(yMax, mean + 4 * sd);
   }
@@ -1023,57 +1189,40 @@ function drawChart() {
   function xPos(i) { return pad.left + (i / (state.maxPoints - 1)) * cw; }
   function yPos(v) { return pad.top + (1 - (v - yMin) / (yMax - yMin)) * ch; }
 
-  // Grid lines
-  ctx.strokeStyle = grid;
-  ctx.lineWidth = 0.5;
-  const yTicks = 5;
-  for (let i = 0; i <= yTicks; i++) {
-    const y = pad.top + (i / yTicks) * ch;
+  // Grid
+  ctx.strokeStyle = grid; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.top + (i / 5) * ch;
     ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
-    const val = yMax - (i / yTicks) * (yMax - yMin);
+    const val = yMax - (i / 5) * (yMax - yMin);
     ctx.fillStyle = fgDim;
     ctx.font = '10px "Source Code Pro", monospace';
     ctx.textAlign = 'right';
     ctx.fillText(val.toFixed(0), pad.left - 6, y + 3);
   }
 
-  // ±3σ band
-  if (state.welford.n > state.warmup && sd > 0) {
+  // ±3σ band (matches z-threshold = 3.0)
+  if (state.welford.n > CONFIG.warmupEvents && sd > 0) {
     const bandTop = yPos(mean + 3 * sd);
     const bandBot = yPos(mean - 3 * sd);
-    ctx.fillStyle = accent.startsWith('#')
-      ? accent + '18'
-      : accent.replace(')', ', 0.09)').replace('rgb', 'rgba');
-    // Safer approach with manual alpha
     ctx.globalAlpha = 0.09;
     ctx.fillStyle = accent;
     ctx.fillRect(pad.left, bandTop, cw, bandBot - bandTop);
     ctx.globalAlpha = 1;
 
     // Mean line
-    ctx.strokeStyle = success;
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([6, 4]);
-    ctx.beginPath();
+    ctx.strokeStyle = success; ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]);
     const my = yPos(mean);
-    ctx.moveTo(pad.left, my); ctx.lineTo(W - pad.right, my);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.left, my); ctx.lineTo(W - pad.right, my); ctx.stroke();
     ctx.setLineDash([]);
 
-    // ±3σ boundary lines
-    ctx.strokeStyle = accent;
-    ctx.lineWidth = 0.7;
-    ctx.globalAlpha = 0.35;
-    ctx.setLineDash([3, 3]);
+    // ±3σ boundary
+    ctx.strokeStyle = accent; ctx.lineWidth = 0.7; ctx.globalAlpha = 0.35; ctx.setLineDash([3, 3]);
     ctx.beginPath(); ctx.moveTo(pad.left, bandTop); ctx.lineTo(W - pad.right, bandTop); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(pad.left, bandBot); ctx.lineTo(W - pad.right, bandBot); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.globalAlpha = 1;
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
 
-    // Labels
-    ctx.fillStyle = fgDim;
-    ctx.font = '9px "Source Code Pro", monospace';
-    ctx.textAlign = 'left';
+    ctx.fillStyle = fgDim; ctx.font = '9px "Source Code Pro", monospace'; ctx.textAlign = 'left';
     ctx.fillText('+3σ', W - pad.right + 3, bandTop + 3);
     ctx.fillText('-3σ', W - pad.right + 3, bandBot + 3);
     ctx.fillText('μ', W - pad.right + 3, my + 3);
@@ -1082,64 +1231,42 @@ function drawChart() {
   // Data line
   const startIdx = Math.max(0, data.length - state.maxPoints);
   const visible = data.slice(startIdx);
-
-  ctx.strokeStyle = accent;
-  ctx.lineWidth = 1.5;
-  ctx.globalAlpha = 0.5;
+  ctx.strokeStyle = accent; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.5;
   ctx.beginPath();
   for (let i = 0; i < visible.length; i++) {
     const x = xPos(state.maxPoints - visible.length + i);
     const y = yPos(visible[i].value);
     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
-  ctx.stroke();
-  ctx.globalAlpha = 1;
+  ctx.stroke(); ctx.globalAlpha = 1;
 
-  // Data points
+  // Points
   for (let i = 0; i < visible.length; i++) {
     const d = visible[i];
     const x = xPos(state.maxPoints - visible.length + i);
     const y = yPos(d.value);
-
     if (d.isAnomaly) {
-      const color = d.severity === 'critical' ? critColor :
-                    d.severity === 'high' ? highColor :
-                    d.severity === 'medium' ? medColor : lowColor;
-      // Glow
-      ctx.beginPath();
-      ctx.arc(x, y, 10, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.globalAlpha = 0.2;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      // Dot
-      ctx.beginPath();
-      ctx.arc(x, y, 4.5, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
+      const color = d.severity === 'critical' ? critColor : d.severity === 'high' ? highColor : d.severity === 'medium' ? medColor : lowColor;
+      ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2);
+      ctx.fillStyle = color; ctx.globalAlpha = 0.2; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = color; ctx.fill();
     } else {
-      ctx.beginPath();
-      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = accent;
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = accent; ctx.fill();
     }
   }
 
-  // X-axis label
-  ctx.fillStyle = fgDim;
-  ctx.font = '9px "Source Code Pro", monospace';
-  ctx.textAlign = 'center';
+  ctx.fillStyle = fgDim; ctx.font = '9px "Source Code Pro", monospace'; ctx.textAlign = 'center';
   ctx.fillText('time →', pad.left + cw / 2, H - 4);
 }
 
-// === SIMULATION TICK ===
+// Simulation tick — mirrors AnomalyDetector.evaluateInternal() logic
 function tick() {
-  // Decide if this should be an anomaly (~8% chance after warmup)
   let value;
-  const forceAnomaly = state.welford.n > state.warmup && Math.random() < 0.08;
+  const forceAnomaly = state.welford.n > CONFIG.warmupEvents && Math.random() < 0.08;
 
   if (forceAnomaly) {
-    // Inject anomaly: 3-7 standard deviations away
     const multiplier = 3 + Math.random() * 4;
     const direction = Math.random() > 0.5 ? 1 : -1;
     value = state.baseMean + direction * multiplier * state.baseStdDev;
@@ -1147,65 +1274,57 @@ function tick() {
     value = randNormal(state.baseMean, state.baseStdDev);
   }
 
-  // Run Welford's algorithm
-  state.welford.observe(value);
-  state.eventCount++;
+  // Same order as evaluateInternal: check BEFORE observe
+  let isAnomaly = false, severity = null, zScore = 0;
 
-  let isAnomaly = false;
-  let severity = null;
-  let zScore = 0;
-
-  if (state.welford.n > state.warmup && state.welford.stdDev > 0) {
+  if (state.welford.n >= CONFIG.warmupEvents && state.welford.stdDev > 1e-9) {
+    // z = Math.abs(event.value() - mean) / stdDev  (computed before observe)
     zScore = Math.abs(value - state.welford.mean) / state.welford.stdDev;
-    if (zScore >= state.zThreshold) {
+    if (zScore >= CONFIG.zThreshold) {
       isAnomaly = true;
       severity = getSeverity(zScore);
       state.anomalyCount++;
     }
   }
 
+  // state.observe(event.value()) — update baseline after scoring
+  state.welford.observe(value);
+  state.eventCount++;
+
   state.data.push({ value, isAnomaly, severity, zScore });
   if (state.data.length > state.maxPoints + 20) {
     state.data = state.data.slice(-state.maxPoints);
   }
 
-  // Update metrics
   document.getElementById('metric-events').textContent = state.eventCount;
   document.getElementById('metric-anomalies').textContent = state.anomalyCount;
-  document.getElementById('metric-mean').textContent =
-    state.welford.n > 2 ? state.welford.mean.toFixed(1) : '—';
-  document.getElementById('metric-stddev').textContent =
-    state.welford.n > 2 ? state.welford.stdDev.toFixed(1) : '—';
+  document.getElementById('metric-mean').textContent = state.welford.n > 2 ? state.welford.mean.toFixed(1) : '—';
+  document.getElementById('metric-stddev').textContent = state.welford.n > 2 ? state.welford.stdDev.toFixed(1) : '—';
 
-  // Feed entry
   if (isAnomaly) {
-    addFeed(`<span class="feed-alert ${severity}">ANOMALY <span class="severity-badge ${severity}">${severity.toUpperCase()}</span> z=${zScore.toFixed(2)} val=${value.toFixed(1)}</span>`);
+    // "Value deviated X.XX standard deviations from baseline"
+    addFeed('<span class="feed-alert ' + severity + '">ANOMALY <span class="severity-badge ' + severity + '">' + severity.toUpperCase() + '</span> z=' + zScore.toFixed(2) + ' val=' + value.toFixed(1) + '</span>');
   } else if (state.eventCount % 5 === 0) {
-    addFeed(`<span class="feed-event">event ingested val=${value.toFixed(1)} z=${state.welford.n > state.warmup ? zScore.toFixed(2) : 'warmup'}</span>`);
+    addFeed('<span class="feed-event">event ingested val=' + value.toFixed(1) + ' z=' + (state.welford.n > CONFIG.warmupEvents ? zScore.toFixed(2) : 'warmup') + '</span>');
   }
 
   drawChart();
 }
 
-// Warmup note
-addFeed(`<span class="feed-event" style="color:var(--accent)">Detector warming up (${state.warmup} events)...</span>`);
+addFeed('<span class="feed-event" style="color:var(--accent)">Detector warming up (' + CONFIG.warmupEvents + ' events)...</span>');
 
-// Start simulation
-let tickInterval = setInterval(tick, 600);
+var tickInterval = setInterval(tick, 600);
 
-// Resize handler
-let resizeRaf;
-window.addEventListener('resize', () => {
+var resizeRaf;
+window.addEventListener('resize', function() {
   cancelAnimationFrame(resizeRaf);
   resizeRaf = requestAnimationFrame(drawChart);
 });
 
-// Initial draw after fonts load
 if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(() => { drawChart(); });
+  document.fonts.ready.then(function() { drawChart(); });
 }
 
-// Seed some initial data so chart isn't empty
-for (let i = 0; i < 15; i++) tick();
+for (var i = 0; i < 15; i++) tick();
 </script>
 </body></html>
