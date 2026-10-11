@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: sentinel
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      properties:
+        spring.json.add.type.headers: false
+    streams:
+      application-id: sentinel-detector-v1
+      properties:
+        processing.guarantee: exactly_once_v2
+        replication.factor: 1
+        state.dir: /tmp/sentinel-kafka-streams
+        auto.offset.reset: earliest
+    consumer:
+      properties:
+        spring.json.trusted.packages: "*"
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:sentinel}
+    username: ${POSTGRES_USER:sentinel}
+    password: ${POSTGRES_PASSWORD:sentinel}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+sentinel:
+  kafka:
+    events-topic: sentinel.events
+    alerts-topic: sentinel.alerts
+  detector:
+    warmup-events: 30
+    z-threshold: 3.0
