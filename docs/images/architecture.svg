@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 800" width="1060" height="800" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrowGrey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1060" height="800" rx="14" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="30" y="36" font-size="18" font-weight="700" fill="#111827">Sentinel architecture</text>
+
+  <!-- Clients -->
+  <rect x="230" y="60" width="260" height="56" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="360" y="85" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Producers / Clients</text>
+  <text x="360" y="104" font-size="11" text-anchor="middle" fill="#4b5563">services, payment systems, telemetry</text>
+
+  <!-- Ingestion API -->
+  <rect x="230" y="150" width="260" height="56" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="360" y="175" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Ingestion API</text>
+  <text x="360" y="194" font-size="11" text-anchor="middle" fill="#374151">Spring Boot, POST /v1/events</text>
+
+  <!-- sentinel.events -->
+  <rect x="230" y="250" width="260" height="64" rx="10" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="360" y="276" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Kafka: sentinel.events</text>
+  <text x="360" y="296" font-size="11" text-anchor="middle" fill="#374151">6 partitions, key = entityId</text>
+
+  <!-- Detector -->
+  <rect x="210" y="360" width="300" height="80" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="360" y="388" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Kafka Streams detector</text>
+  <text x="360" y="408" font-size="11" text-anchor="middle" fill="#374151">Welford mean/variance + z-score</text>
+  <text x="360" y="425" font-size="11" text-anchor="middle" fill="#374151">exactly_once_v2</text>
+
+  <!-- baseline-store -->
+  <rect x="610" y="368" width="220" height="64" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="720" y="394" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">baseline-store</text>
+  <text x="720" y="414" font-size="11" text-anchor="middle" fill="#374151">RocksDB, per entityId|metric</text>
+
+  <!-- changelog -->
+  <rect x="610" y="480" width="220" height="56" rx="10" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="720" y="505" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Kafka: changelog topic</text>
+  <text x="720" y="524" font-size="11" text-anchor="middle" fill="#374151">state backup and recovery</text>
+
+  <!-- sentinel.alerts -->
+  <rect x="230" y="490" width="260" height="56" rx="10" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="360" y="515" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Kafka: sentinel.alerts</text>
+  <text x="360" y="534" font-size="11" text-anchor="middle" fill="#374151">anomalies only</text>
+
+  <!-- Alert consumer -->
+  <rect x="230" y="590" width="260" height="56" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="360" y="615" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Alert consumer</text>
+  <text x="360" y="634" font-size="11" text-anchor="middle" fill="#374151">idempotent write by alert_id</text>
+
+  <!-- PostgreSQL -->
+  <rect x="230" y="690" width="260" height="56" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="360" y="715" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">PostgreSQL 16</text>
+  <text x="360" y="734" font-size="11" text-anchor="middle" fill="#374151">durable alerts, indexed</text>
+
+  <!-- Alert REST API -->
+  <rect x="610" y="690" width="220" height="56" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="720" y="715" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Alert REST API</text>
+  <text x="720" y="734" font-size="11" text-anchor="middle" fill="#374151">GET /v1/alerts, by severity</text>
+
+  <!-- Redis -->
+  <rect x="610" y="590" width="220" height="56" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="720" y="615" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Redis 7</text>
+  <text x="720" y="634" font-size="11" text-anchor="middle" fill="#374151">cache / extension point</text>
+
+  <!-- Prometheus -->
+  <rect x="610" y="150" width="220" height="56" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="720" y="175" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Prometheus</text>
+  <text x="720" y="194" font-size="11" text-anchor="middle" fill="#374151">scrapes /actuator/prometheus</text>
+
+  <!-- Grafana -->
+  <rect x="610" y="250" width="220" height="56" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="720" y="275" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Grafana</text>
+  <text x="720" y="294" font-size="11" text-anchor="middle" fill="#374151">dashboards</text>
+
+  <!-- Main flow arrows -->
+  <line x1="360" y1="116" x2="360" y2="150" stroke="#374151" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="372" y="138" font-size="11" fill="#4b5563">JSON events</text>
+
+  <line x1="360" y1="206" x2="360" y2="250" stroke="#374151" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="372" y="233" font-size="11" fill="#4b5563">produce (idempotent)</text>
+
+  <line x1="360" y1="314" x2="360" y2="360" stroke="#374151" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="372" y="341" font-size="11" fill="#4b5563">consume, same entity = same partition</text>
+
+  <line x1="360" y1="440" x2="360" y2="490" stroke="#374151" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="372" y="469" font-size="11" fill="#4b5563">anomalies only</text>
+
+  <line x1="360" y1="546" x2="360" y2="590" stroke="#374151" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="372" y="572" font-size="11" fill="#4b5563">consume</text>
+
+  <line x1="360" y1="646" x2="360" y2="690" stroke="#374151" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="372" y="672" font-size="11" fill="#4b5563">upsert</text>
+
+  <line x1="490" y1="718" x2="610" y2="718" stroke="#374151" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="550" y="710" font-size="11" text-anchor="middle" fill="#4b5563">reads</text>
+
+  <!-- State store: read/write -->
+  <line x1="510" y1="400" x2="610" y2="400" stroke="#374151" stroke-width="1.8" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="560" y="392" font-size="11" text-anchor="middle" fill="#4b5563">read / update</text>
+
+  <!-- Supporting flows (dashed) -->
+  <line x1="720" y1="432" x2="720" y2="480" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowGrey)"/>
+  <text x="732" y="461" font-size="11" fill="#6b7280">state backup</text>
+
+  <line x1="490" y1="178" x2="610" y2="178" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowGrey)"/>
+  <text x="550" y="170" font-size="11" text-anchor="middle" fill="#6b7280">metrics</text>
+
+  <line x1="720" y1="206" x2="720" y2="250" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowGrey)"/>
+
+  <line x1="490" y1="618" x2="610" y2="618" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowGrey)"/>
+  <text x="550" y="610" font-size="11" text-anchor="middle" fill="#6b7280">optional</text>
+
+  <!-- Legend -->
+  <g font-size="12" fill="#374151">
+    <rect x="30" y="480" width="16" height="16" rx="3" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="54" y="493">Sentinel component</text>
+    <rect x="30" y="506" width="16" height="16" rx="3" fill="#ffedd5" stroke="#ea580c"/>
+    <text x="54" y="519">Kafka topic</text>
+    <rect x="30" y="532" width="16" height="16" rx="3" fill="#dcfce7" stroke="#16a34a"/>
+    <text x="54" y="545">Data store</text>
+    <rect x="30" y="558" width="16" height="16" rx="3" fill="#f3f4f6" stroke="#6b7280"/>
+    <text x="54" y="571">External / observability</text>
+    <line x1="30" y1="594" x2="46" y2="594" stroke="#374151" stroke-width="1.8"/>
+    <text x="54" y="598">Data flow</text>
+    <line x1="30" y1="618" x2="46" y2="618" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="54" y="622">Supporting flow</text>
+  </g>
+</svg>
