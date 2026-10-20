@@ -297,7 +297,3 @@ sentinel/
 ```
 
 ---
-
-## License
-
-MIT
