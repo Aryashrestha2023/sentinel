@@ -7,4 +7,5 @@ import java.util.List;
 public interface AlertRepository extends JpaRepository<AlertEntity, String> {
     List<AlertEntity> findByOrderByDetectedAtDesc(Pageable pageable);
     List<AlertEntity> findBySeverityOrderByDetectedAtDesc(AlertEntity.Severity severity, Pageable pageable);
+    long countByEntityId(String entityId);
 }
